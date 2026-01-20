@@ -1,0 +1,50 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","className":"pt-header pb-80","backgroundColor":"cream","layout":{"type":"constrained"}} -->
+<main class="wp-block-group has-cream-background-color has-background pt-header pb-80">
+
+	<!-- wp:group {"className":"mb-60","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group mb-60">
+		<!-- wp:query-title {"type":"archive","className":"text-4xl","textColor":"teal"} /-->
+		<!-- wp:term-description {"className":"text-lg leading-relaxed","textColor":"teal-light"} /-->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":2,"query":{"perPage":10,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":true},"layout":{"type":"default"}} -->
+	<div class="wp-block-query">
+
+		<!-- wp:post-template {"layout":{"type":"grid","columnCount":3}} -->
+
+			<!-- wp:group {"className":"rounded p-50","backgroundColor":"white","layout":{"type":"default"}} -->
+			<div class="wp-block-group has-white-background-color has-background rounded p-50">
+
+				<!-- wp:post-date {"className":"text-base font-medium","textColor":"teal-light"} /-->
+
+				<!-- wp:post-title {"level":3,"isLink":true,"className":"text-lg mt-20 mb-30"} /-->
+
+				<!-- wp:post-excerpt {"moreText":"Read more →","excerptLength":20,"className":"text-base leading-normal","textColor":"teal-light"} /-->
+
+			</div>
+			<!-- /wp:group -->
+
+		<!-- /wp:post-template -->
+
+		<!-- wp:query-pagination {"paginationArrow":"arrow","layout":{"type":"flex","justifyContent":"center"}} -->
+			<!-- wp:query-pagination-previous /-->
+			<!-- wp:query-pagination-numbers /-->
+			<!-- wp:query-pagination-next /-->
+		<!-- /wp:query-pagination -->
+
+		<!-- wp:no-results -->
+			<!-- wp:paragraph {"textColor":"teal-light"} -->
+			<p class="has-teal-light-color has-text-color">No posts found.</p>
+			<!-- /wp:paragraph -->
+		<!-- /wp:no-results -->
+
+	</div>
+	<!-- /wp:query -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

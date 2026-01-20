@@ -1,0 +1,116 @@
+<!-- wp:group {"tagName":"header","className":"header pt-0 pb-0","lock":{"move":true,"remove":true},"style":{"position":{"type":"sticky","top":"0px"}},"backgroundColor":"cream","layout":{"type":"default"}} -->
+<header class="wp-block-group header pt-0 pb-0 has-cream-background-color has-background">
+
+	<!-- wp:group {"className":"header-container p-40","lock":{"move":true,"remove":true},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group header-container p-40">
+
+		<!-- wp:group {"className":"logo","lock":{"move":true,"remove":true},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"center"}} -->
+		<div class="wp-block-group logo">
+			<!-- wp:html -->
+			<a href="/" class="logo-link">
+				<span class="logo-icon-img"></span>
+				<span class="logo-text">Knowledge Commons</span>
+			</a>
+			<!-- /wp:html -->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:html -->
+		<nav class="nav-desktop">
+			<a href="/activity/">News Feed</a>
+			<a href="/members/">Members</a>
+			<a href="/groups/">Groups</a>
+			<a href="/sites/">Sites</a>
+			<a href="https://works.hcommons.org">Works</a>
+			<button class="search-toggle" id="searchToggle" aria-label="Open search">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="11" cy="11" r="8"></circle>
+					<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+				</svg>
+			</button>
+		</nav>
+		<!-- /wp:html -->
+
+		<!-- wp:group {"className":"header-actions","lock":{"move":true,"remove":true},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
+		<div class="wp-block-group header-actions">
+			<!-- wp:shortcode -->
+			[hcommons_header_account]
+			<!-- /wp:shortcode -->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:group {"className":"mobile-menu-btn","lock":{"move":true,"remove":true},"layout":{"type":"default"}} -->
+		<div class="wp-block-group mobile-menu-btn">
+			<!-- wp:html -->
+			<button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle menu">
+				<span class="hamburger-icon">&#9776;</span>
+				<span class="close-icon hidden">&#10005;</span>
+			</button>
+			<!-- /wp:html -->
+		</div>
+		<!-- /wp:group -->
+
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:group {"className":"mobile-overlay","lock":{"move":true,"remove":true}} -->
+	<div class="wp-block-group mobile-overlay" id="mobileOverlay"></div>
+	<!-- /wp:group -->
+
+	<!-- wp:group {"className":"mobile-menu p-50","lock":{"move":true,"remove":true}} -->
+	<div class="wp-block-group mobile-menu p-50" id="mobileMenu">
+		<!-- wp:html -->
+		<nav class="mobile-nav">
+			<a href="/activity/">News Feed</a>
+			<a href="/members/">Members</a>
+			<a href="/groups/">Groups</a>
+			<a href="/sites/">Sites</a>
+			<a href="https://works.hcommons.org">Works</a>
+			<button class="search-toggle-mobile" id="searchToggleMobile" aria-label="Open search">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="11" cy="11" r="8"></circle>
+					<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+				</svg>
+				<span>Search</span>
+			</button>
+		</nav>
+		<!-- /wp:html -->
+
+		<!-- wp:group {"className":"mobile-actions","lock":{"move":true,"remove":true},"layout":{"type":"flex","orientation":"vertical"}} -->
+		<div class="wp-block-group mobile-actions">
+			<!-- wp:shortcode -->
+			[hcommons_header_account]
+			<!-- /wp:shortcode -->
+		</div>
+		<!-- /wp:group -->
+	</div>
+	<!-- /wp:group -->
+
+<link rel='stylesheet' id='fontawesome-css' href='//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css?ver=4.4.0' type='text/css' media='all' />
+
+</header>
+
+<!-- Search Modal (outside header to avoid stacking context issues) -->
+<div class="search-modal-overlay" id="searchOverlay"></div>
+<div class="search-modal" id="searchModal" role="dialog" aria-modal="true" aria-label="Search">
+	<button class="search-modal-close" id="searchClose" aria-label="Close search">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+			<line x1="18" y1="6" x2="6" y2="18"></line>
+			<line x1="6" y1="6" x2="18" y2="18"></line>
+		</svg>
+	</button>
+	<div class="search-modal-content">
+		<form class="search-modal-form" id="searchForm" action="/" method="get">
+			<div class="search-input-wrapper">
+				<svg class="search-input-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="11" cy="11" r="8"></circle>
+					<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+				</svg>
+				<input type="search" name="s" class="search-modal-input" id="searchInput" placeholder="Search Knowledge Commons..." autocomplete="off" />
+			</div>
+			<button type="submit" class="search-modal-submit">Search</button>
+		</form>
+		<p class="search-modal-hint">Press Enter to search or Esc to close</p>
+	</div>
+</div>
+<!-- /wp:group -->
