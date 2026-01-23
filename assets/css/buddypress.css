@@ -2350,6 +2350,11 @@
     display: none !important;
 }
 
+/* Group list items use .hidden as a status class, not a visibility toggle. */
+#buddypress ul.item-list li.hidden {
+    display: list-item !important;
+}
+
 #buddypress .clearfix::after {
     content: "";
     display: table;

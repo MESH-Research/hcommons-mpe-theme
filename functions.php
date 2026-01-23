@@ -476,28 +476,68 @@ function hcommons_render_blog_posts_html( $count, $is_external = false ) {
 }
 
 /**
- * Show hidden groups in the user's own "My Groups" list
+ * Include hidden groups in the AJAX groups query when appropriate
  *
- * By default BuddyPress excludes hidden groups from all group queries.
- * When a logged-in user views their own groups (scope=personal), the query
- * is already constrained to their memberships via user_id, so it is safe
- * to include hidden groups they belong to.
+ * Hooks into bp_ajax_querystring which controls the groups directory
+ * AJAX requests. When viewing "My Groups" (scope=personal), sets
+ * show_hidden=1 so the user's hidden group memberships appear.
+ * The user_id constraint BuddyPress adds for personal scope ensures
+ * only the user's own groups are returned.
  *
- * @param array $args Parsed arguments for bp_has_groups().
- * @return array Modified arguments.
+ * @param string $querystring The AJAX querystring.
+ * @param string $object      The object type (groups, members, etc.).
+ * @return string Modified querystring.
  */
-function hcommons_show_hidden_groups_for_user( $args ) {
-	if (
-		is_user_logged_in() &&
-		isset( $args['scope'] ) &&
-		'personal' === $args['scope'] &&
-		isset( $args['user_id'] ) &&
-		(int) $args['user_id'] === bp_loggedin_user_id()
-	) {
-		$args['show_hidden'] = true;
+function hcommons_groups_ajax_show_hidden( $querystring, $object ) {
+	if ( 'groups' !== $object || ! is_user_logged_in() ) {
+		return $querystring;
 	}
 
-	return $args;
+	$args = wp_parse_args( $querystring );
+
+	if ( isset( $args['scope'] ) && 'personal' === $args['scope'] ) {
+		$args['show_hidden'] = '1';
+		$args['user_id'] = bp_loggedin_user_id();
+		return build_query( $args );
+	}
+
+	return $querystring;
 }
-add_filter( 'bp_after_has_groups_parse_args', 'hcommons_show_hidden_groups_for_user' );
+add_filter( 'bp_ajax_querystring', 'hcommons_groups_ajax_show_hidden', 20, 2 );
+
+/**
+ * Modify the groups SQL to include hidden groups the user is a member of
+ *
+ * When show_hidden is false (the default for non-personal scopes), BuddyPress
+ * adds a WHERE clause excluding hidden groups. This filter relaxes that
+ * exclusion for groups the logged-in user belongs to, so hidden groups
+ * appear in search results for their own members without leaking to others.
+ *
+ * @param string $sql The paged groups SQL query.
+ * @return string Modified SQL.
+ */
+function hcommons_groups_sql_show_user_hidden( $sql ) {
+	if ( ! is_user_logged_in() ) {
+		return $sql;
+	}
+
+	global $wpdb;
+	$bp = buddypress();
+	$user_id = bp_loggedin_user_id();
+
+	// Replace the blanket hidden exclusion with one that allows the user's own hidden groups.
+	$hidden_clause = "g.status != 'hidden'";
+	$replacement = $wpdb->prepare(
+		"(g.status != 'hidden' OR g.id IN (SELECT group_id FROM {$bp->groups->table_name_members} WHERE user_id = %d AND is_confirmed = 1))",
+		$user_id
+	);
+
+	if ( strpos( $sql, $hidden_clause ) !== false ) {
+		$sql = str_replace( $hidden_clause, $replacement, $sql );
+	}
+
+	return $sql;
+}
+add_filter( 'bp_groups_get_paged_groups_sql', 'hcommons_groups_sql_show_user_hidden' );
+add_filter( 'bp_groups_get_total_groups_sql', 'hcommons_groups_sql_show_user_hidden' );
 
