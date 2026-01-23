@@ -474,3 +474,30 @@ function hcommons_render_blog_posts_html( $count, $is_external = false ) {
 
 	return $output;
 }
+
+/**
+ * Show hidden groups in the user's own "My Groups" list
+ *
+ * By default BuddyPress excludes hidden groups from all group queries.
+ * When a logged-in user views their own groups (scope=personal), the query
+ * is already constrained to their memberships via user_id, so it is safe
+ * to include hidden groups they belong to.
+ *
+ * @param array $args Parsed arguments for bp_has_groups().
+ * @return array Modified arguments.
+ */
+function hcommons_show_hidden_groups_for_user( $args ) {
+	if (
+		is_user_logged_in() &&
+		isset( $args['scope'] ) &&
+		'personal' === $args['scope'] &&
+		isset( $args['user_id'] ) &&
+		(int) $args['user_id'] === bp_loggedin_user_id()
+	) {
+		$args['show_hidden'] = true;
+	}
+
+	return $args;
+}
+add_filter( 'bp_after_has_groups_parse_args', 'hcommons_show_hidden_groups_for_user' );
+
