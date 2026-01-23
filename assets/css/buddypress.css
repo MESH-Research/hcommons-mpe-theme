@@ -1886,7 +1886,6 @@
 #buddypress #cover-image-container img,
 #buddypress #header-cover-image img {
     width: 100% !important;
-    height: 200px !important;
     object-fit: cover !important;
     border-radius: 1rem 1rem 0 0 !important;
 }
