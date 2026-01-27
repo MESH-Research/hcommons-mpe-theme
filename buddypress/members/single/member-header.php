@@ -39,6 +39,7 @@
 				$mastodon = function_exists( 'xprofile_get_field_data' ) ? xprofile_get_field_data( 'Mastodon handle', bp_displayed_user_id() ) : '';
 				$orcid = function_exists( 'xprofile_get_field_data' ) ? xprofile_get_field_data( '<em>ORCID</em> iD', bp_displayed_user_id() ) : '';
 				$website = function_exists( 'xprofile_get_field_data' ) ? xprofile_get_field_data( 'Website', bp_displayed_user_id() ) : '';
+				$tier = get_user_tier( bp_displayed_user_id() );
 				?>
 
 				<h2 class="member-name"><?php echo bp_get_displayed_user_fullname(); ?></h2>
@@ -54,6 +55,13 @@
 						</a>
 					</h4>
 				<?php endif; ?>
+
+                <?php if ( $tier ) : ?>
+                    <h4 class="member-affiliation">
+                        <span>KC Champion:</span>
+                        <?php display_user_tier_badge( $user_id ); ?>
+                    </h4>
+                <?php endif; ?>
 
 				<div class="member-social-links">
 					<?php
