@@ -68,6 +68,10 @@
 						<!-- wp:button {"className":"btn-primary","lock":{"move":true,"remove":false}} -->
 						<div class="wp-block-button btn-primary"><a class="wp-block-button__link wp-element-button" href="https://works.hcommons.org">Explore Works</a></div>
 						<!-- /wp:button -->
+
+						<!-- wp:button {"className":"btn-primary","lock":{"move":true,"remove":false}} -->
+                        <div class="wp-block-button btn-primary"><a class="wp-block-button__link wp-element-button" href="https://about.hcommons.org/kc-champions/">Become a Champion</a></div>
+                        <!-- /wp:button -->
 					</div>
 					<!-- /wp:buttons -->
 

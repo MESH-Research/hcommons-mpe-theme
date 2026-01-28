@@ -58,8 +58,8 @@
 
                 <?php if ( $tier ) : ?>
                     <h4 class="member-affiliation">
-                        <span>KC Champion:</span>
-                        <?php display_user_tier_badge( $user_id ); ?>
+                        <a href="https://about.hcommons.org/kc-champions/"><span>KC Champion:</span>
+                        <?php display_user_tier_badge( bp_displayed_user_id() ); ?></a>
                     </h4>
                 <?php endif; ?>
 
