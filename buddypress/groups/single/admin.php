@@ -112,7 +112,72 @@
 		</label>
  	</div>
 
-	<hr /> 
+	<hr />
+
+	<?php /* Show or Hide Menu Items for Members */ ?>
+	<h4><?php _e( 'Show or Hide Menu Items for Members', 'boss' ); ?></h4>
+
+	<p><?php _e( 'Select which menu items should be visible to regular group members.', 'boss' ); ?></p>
+
+	<div class="checkbox group-nav-options">
+		<?php
+		$group_id = bp_get_current_group_id();
+		$group_nav = buddypress()->groups->nav;
+
+		if ( ! empty( $group_nav ) && method_exists( $group_nav, 'get_secondary' ) ) {
+			$nav_items = $group_nav->get_secondary( array( 'parent_slug' => bp_get_current_group_slug() ) );
+
+			if ( ! empty( $nav_items ) ) {
+				$hidden_tabs = groups_get_groupmeta( $group_id, 'group_hidden_tabs', true );
+				if ( ! is_array( $hidden_tabs ) ) {
+					$hidden_tabs = array();
+				}
+
+				foreach ( $nav_items as $nav_item ) {
+					$slug = $nav_item->slug;
+					$name = $nav_item->name;
+					$checked = ! in_array( $slug, $hidden_tabs ) ? ' checked="checked"' : '';
+					?>
+					<label>
+						<input type="checkbox" name="group-nav-item[]" value="<?php echo esc_attr( $slug ); ?>"<?php echo $checked; ?> />
+						<?php echo esc_html( wp_strip_all_tags( $name ) ); ?>
+					</label>
+					<?php
+				}
+			}
+		}
+		?>
+	</div>
+
+	<hr />
+
+	<?php /* Select Default Landing Page */ ?>
+	<h4><?php _e( 'Select Default Landing Page for Group', 'boss' ); ?></h4>
+
+	<p><?php _e( 'Choose which page members will see first when visiting the group.', 'boss' ); ?></p>
+
+	<select name="group-landing-page" id="group-landing-page">
+		<?php
+		$current_landing = groups_get_groupmeta( $group_id, 'group_landing_page', true );
+
+		if ( ! empty( $group_nav ) && method_exists( $group_nav, 'get_secondary' ) ) {
+			$nav_items = $group_nav->get_secondary( array( 'parent_slug' => bp_get_current_group_slug() ) );
+
+			if ( ! empty( $nav_items ) ) {
+				foreach ( $nav_items as $nav_item ) {
+					$slug = $nav_item->slug;
+					$name = wp_strip_all_tags( $nav_item->name );
+					$selected = ( $current_landing === $slug ) ? ' selected="selected"' : '';
+					?>
+					<option value="<?php echo esc_attr( $slug ); ?>"<?php echo $selected; ?>><?php echo esc_html( $name ); ?></option>
+					<?php
+				}
+			}
+		}
+		?>
+	</select>
+
+	<hr />
 
 	<?php do_action( 'bp_after_group_settings_admin' ); ?>
 
@@ -135,6 +200,14 @@
 				<?php bp_button( array( 'id' => 'delete_group_avatar', 'component' => 'groups', 'wrapper_id' => 'delete-group-avatar-button', 'link_class' => 'edit', 'link_href' => bp_get_group_avatar_delete_link(), 'link_title' => __( 'Delete Avatar', 'boss' ), 'link_text' => __( 'Delete Avatar', 'boss' ) ) ); ?>
 
 			<?php endif; ?>
+
+			<p>
+				<input type="file" name="file" id="file" />
+				<input type="submit" name="upload" id="upload" value="<?php esc_attr_e( 'Upload Image', 'boss' ); ?>" />
+				<input type="hidden" name="action" id="action" value="bp_avatar_upload" />
+			</p>
+
+			<?php bp_avatar_get_templates(); ?>
 
 			<?php wp_nonce_field( 'bp_avatar_upload' ); ?>
 

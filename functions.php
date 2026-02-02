@@ -541,3 +541,136 @@ function hcommons_groups_sql_show_user_hidden( $sql ) {
 add_filter( 'bp_groups_get_paged_groups_sql', 'hcommons_groups_sql_show_user_hidden' );
 add_filter( 'bp_groups_get_total_groups_sql', 'hcommons_groups_sql_show_user_hidden' );
 
+/**
+ * Save group admin settings for hidden nav tabs and landing page
+ *
+ * Hooks into the group settings save action to persist the admin's choices
+ * for which navigation items to show/hide and which page to use as the
+ * default landing page.
+ *
+ * @param int $group_id The ID of the group being edited.
+ */
+function hcommons_save_group_nav_settings( $group_id ) {
+	if ( ! bp_is_group_admin_screen( 'group-settings' ) ) {
+		return;
+	}
+
+	// Get all available nav items to determine which are hidden
+	$group_nav = buddypress()->groups->nav;
+	$group_slug = bp_get_current_group_slug();
+	$all_nav_slugs = array();
+
+	if ( ! empty( $group_nav ) && method_exists( $group_nav, 'get_secondary' ) ) {
+		$nav_items = $group_nav->get_secondary( array( 'parent_slug' => $group_slug ) );
+		if ( ! empty( $nav_items ) ) {
+			foreach ( $nav_items as $nav_item ) {
+				$all_nav_slugs[] = $nav_item->slug;
+			}
+		}
+	}
+
+	// Get the checked (visible) items from form submission
+	$visible_items = isset( $_POST['group-nav-item'] ) ? array_map( 'sanitize_text_field', $_POST['group-nav-item'] ) : array();
+
+	// Calculate hidden items (all items minus visible items)
+	$hidden_tabs = array_diff( $all_nav_slugs, $visible_items );
+
+	// Save hidden tabs to group meta
+	groups_update_groupmeta( $group_id, 'group_hidden_tabs', array_values( $hidden_tabs ) );
+
+	// Save landing page setting
+	if ( isset( $_POST['group-landing-page'] ) ) {
+		$landing_page = sanitize_text_field( $_POST['group-landing-page'] );
+		groups_update_groupmeta( $group_id, 'group_landing_page', $landing_page );
+	}
+}
+add_action( 'groups_group_settings_edited', 'hcommons_save_group_nav_settings' );
+
+/**
+ * Hide navigation items from non-admin group members
+ *
+ * Filters the group navigation to remove items that the group admin
+ * has chosen to hide from regular members. Admins and mods can still
+ * see all items.
+ */
+function hcommons_filter_group_nav_items() {
+	if ( ! bp_is_group() ) {
+		return;
+	}
+
+	$group_id = bp_get_current_group_id();
+	$group_slug = bp_get_current_group_slug();
+
+	// Admins and mods can see everything
+	if ( bp_is_item_admin() || bp_is_item_mod() ) {
+		return;
+	}
+
+	$hidden_tabs = groups_get_groupmeta( $group_id, 'group_hidden_tabs', true );
+
+	if ( empty( $hidden_tabs ) || ! is_array( $hidden_tabs ) ) {
+		return;
+	}
+
+	$group_nav = buddypress()->groups->nav;
+
+	if ( empty( $group_nav ) || ! method_exists( $group_nav, 'delete_nav' ) ) {
+		return;
+	}
+
+	foreach ( $hidden_tabs as $slug ) {
+		$group_nav->delete_nav( $slug, $group_slug );
+	}
+}
+add_action( 'bp_actions', 'hcommons_filter_group_nav_items', 5 );
+
+/**
+ * Redirect to group landing page when visiting group home
+ *
+ * When a group admin has set a custom landing page, redirect members
+ * to that page instead of the default home/activity page.
+ */
+function hcommons_group_landing_page_redirect() {
+	if ( ! bp_is_group() || ! bp_is_single_item() ) {
+		return;
+	}
+
+	$group_id = bp_get_current_group_id();
+	$landing_page = groups_get_groupmeta( $group_id, 'group_landing_page', true );
+
+	// Only redirect if a landing page is set and we're on the group home
+	if ( empty( $landing_page ) ) {
+		return;
+	}
+
+	// Get current action (the nav item slug we're viewing)
+	$current_action = bp_current_action();
+
+	// Only redirect from home/empty action to the landing page
+	// Don't redirect if we're already on another page or the landing page itself
+	if ( ! empty( $current_action ) && 'home' !== $current_action ) {
+		return;
+	}
+
+	// Don't redirect admins/mods if landing page is hidden
+	$hidden_tabs = groups_get_groupmeta( $group_id, 'group_hidden_tabs', true );
+	if ( ! bp_is_item_admin() && ! bp_is_item_mod() ) {
+		if ( is_array( $hidden_tabs ) && in_array( $landing_page, $hidden_tabs, true ) ) {
+			return; // Landing page is hidden from this user, don't redirect
+		}
+	}
+
+	// Build the redirect URL
+	$group_permalink = bp_get_group_url( groups_get_current_group() );
+	$redirect_url = trailingslashit( $group_permalink ) . $landing_page . '/';
+
+	// Prevent redirect loop
+	$current_url = bp_get_requested_url();
+	if ( trailingslashit( $current_url ) === trailingslashit( $redirect_url ) ) {
+		return;
+	}
+
+	bp_core_redirect( $redirect_url );
+}
+add_action( 'bp_actions', 'hcommons_group_landing_page_redirect', 1 );
+
