@@ -609,6 +609,7 @@ body.admin-bar .header.header-at-top.header-hidden {
 }
 
 .mobile-actions .header-account {
+    display: flex !important;
     flex-direction: column;
     width: 100%;
     gap: 0.75rem;
@@ -624,26 +625,49 @@ body.admin-bar .header.header-at-top.header-hidden {
     padding: 0.75rem 1.5rem;
 }
 
+.mobile-actions .header-account.logged-out {
+    display: flex !important;
+}
+
+.mobile-actions .header-account.logged-out .btn-text,
+.mobile-actions .header-account.logged-out .btn-primary-sm {
+    display: block !important;
+    border-radius: 8px;
+}
+
+.mobile-actions .header-account.logged-out .btn-primary-sm {
+    background-color: #49665E;
+    color: white;
+}
+
 .mobile-actions .header-account-login {
     padding-top: 0;
+    display: contents;
 }
 
 .mobile-actions .header-account-login .user-link {
-    justify-content: center;
-    padding: 0.75rem;
-    background-color: rgba(26, 95, 78, 0.1);
-    border-radius: 8px;
+    display: none;
 }
 
 .mobile-actions .header-account-login .account-dropdown {
-    position: static;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    box-shadow: none;
-    margin-top: 0.5rem;
-    background: rgba(26, 95, 78, 0.05);
+    display: contents !important;
+}
+
+.mobile-actions .header-account-login .account-dropdown a {
+    display: block !important;
+    padding: 0.75rem 1rem;
+    color: #333;
+    text-decoration: none;
+    font-size: 1rem;
     border-radius: 8px;
+}
+
+.mobile-actions .header-account-login .account-dropdown a:hover {
+    background-color: rgba(26, 95, 78, 0.05);
+}
+
+.mobile-actions .header-account-login .account-dropdown .logout-link {
+    color: #dc3545;
 }
 
 .mobile-actions .header-notifications {
@@ -663,13 +687,7 @@ body.admin-bar .header.header-at-top.header-hidden {
 }
 
 .mobile-actions .notifications-dropdown {
-    position: static;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    box-shadow: none;
-    margin-top: 0.5rem;
-    min-width: 100%;
+    display: none !important;
 }
 
 /* Mobile Menu */
@@ -758,6 +776,15 @@ body.admin-bar .mobile-overlay {
 
 .mobile-nav a:hover {
     background-color: rgba(26, 95, 78, 0.05);
+}
+
+.mobile-nav .mobile-auth-link.logout-link {
+    color: #dc3545;
+}
+
+.mobile-nav .mobile-auth-link.login-link {
+    color: #49665E;
+    font-weight: 600;
 }
 
 .mobile-actions {

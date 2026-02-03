@@ -407,6 +407,25 @@ function hcommons_header_account_shortcode() {
 add_shortcode( 'hcommons_header_account', 'hcommons_header_account_shortcode' );
 
 /**
+ * Render mobile auth link shortcode
+ *
+ * Shows a logout link if logged in, or login link if logged out.
+ * Designed for use in the mobile navigation menu.
+ *
+ * @return string HTML output
+ */
+function hcommons_mobile_auth_link_shortcode() {
+	if ( is_user_logged_in() ) {
+		$logout_url = wp_logout_url( home_url() );
+		return '<a href="' . esc_url( $logout_url ) . '" class="mobile-auth-link logout-link">' . esc_html__( 'Log Out', 'flavor' ) . '</a>';
+	} else {
+		$login_url = wp_login_url();
+		return '<a href="' . esc_url( $login_url ) . '" class="mobile-auth-link login-link">' . esc_html__( 'Log In', 'flavor' ) . '</a>';
+	}
+}
+add_shortcode( 'hcommons_mobile_auth_link', 'hcommons_mobile_auth_link_shortcode' );
+
+/**
  * Ensure shortcodes are processed in block template parts
  *
  * This filter processes shortcodes in the core/shortcode block content,
