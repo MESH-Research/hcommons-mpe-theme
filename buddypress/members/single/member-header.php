@@ -130,9 +130,6 @@
                         <a href="<?php echo esc_url( bp_displayed_user_domain() . 'profile/change-avatar/' ); ?>" class="change-link change-avatar">
                             <?php esc_html_e( 'Change Profile Photo', 'flavor' ); ?>
                         </a><br/>
-                        <a href="<?php echo esc_url( bp_displayed_user_domain() . 'profile/change-cover-image/' ); ?>" class="change-link change-cover">
-                            <?php esc_html_e( 'Change Cover Image', 'flavor' ); ?>
-                        </a>
                     </div>
                 <?php endif; ?>
 
