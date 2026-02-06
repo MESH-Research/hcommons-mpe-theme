@@ -114,40 +114,11 @@
 
 	<hr />
 
-	<?php /* Show or Hide Menu Items for Members */ ?>
-	<h4><?php _e( 'Show or Hide Menu Items for Members', 'boss' ); ?></h4>
-
-	<p><?php _e( 'Select which menu items should be visible to regular group members.', 'boss' ); ?></p>
-
-	<div class="checkbox group-nav-options">
-		<?php
-		$group_id = bp_get_current_group_id();
-		$group_nav = buddypress()->groups->nav;
-
-		if ( ! empty( $group_nav ) && method_exists( $group_nav, 'get_secondary' ) ) {
-			$nav_items = $group_nav->get_secondary( array( 'parent_slug' => bp_get_current_group_slug() ) );
-
-			if ( ! empty( $nav_items ) ) {
-				$hidden_tabs = groups_get_groupmeta( $group_id, 'group_hidden_tabs', true );
-				if ( ! is_array( $hidden_tabs ) ) {
-					$hidden_tabs = array();
-				}
-
-				foreach ( $nav_items as $nav_item ) {
-					$slug = $nav_item->slug;
-					$name = $nav_item->name;
-					$checked = ! in_array( $slug, $hidden_tabs ) ? ' checked="checked"' : '';
-					?>
-					<label>
-						<input type="checkbox" name="group-nav-item[]" value="<?php echo esc_attr( $slug ); ?>"<?php echo $checked; ?> />
-						<?php echo esc_html( wp_strip_all_tags( $name ) ); ?>
-					</label>
-					<?php
-				}
-			}
-		}
-		?>
-	</div>
+	<?php
+	if ( function_exists( 'hc_custom_get_options_nav' ) ) {
+		hc_custom_get_options_nav( bp_get_current_group_slug() );
+	}
+	?>
 
 	<hr />
 
