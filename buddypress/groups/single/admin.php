@@ -122,31 +122,49 @@
 
 	<hr />
 
-	<?php /* Select Default Landing Page */ ?>
-	<h4><?php _e( 'Select Default Landing Page for Group', 'boss' ); ?></h4>
+	<h4><?php _e( 'Select Default Landing Page for Group', 'group_forum_menu' ); ?></h4>
 
-	<p><?php _e( 'Choose which page members will see first when visiting the group.', 'boss' ); ?></p>
+	<select name="group-landing-page-select" id="group-landing-page-select">
 
-	<select name="group-landing-page" id="group-landing-page">
-		<?php
-		$current_landing = groups_get_groupmeta( $group_id, 'group_landing_page', true );
-
-		if ( ! empty( $group_nav ) && method_exists( $group_nav, 'get_secondary' ) ) {
-			$nav_items = $group_nav->get_secondary( array( 'parent_slug' => bp_get_current_group_slug() ) );
-
-			if ( ! empty( $nav_items ) ) {
-				foreach ( $nav_items as $nav_item ) {
-					$slug = $nav_item->slug;
-					$name = wp_strip_all_tags( $nav_item->name );
-					$selected = ( $current_landing === $slug ) ? ' selected="selected"' : '';
-					?>
-					<option value="<?php echo esc_attr( $slug ); ?>"<?php echo $selected; ?>><?php echo esc_html( $name ); ?></option>
-					<?php
-				}
-			}
-		}
-		?>
 	</select>
+
+	<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		var group_id = $("input[name='group-id']").val();
+		var group_slug = '<?php echo esc_js( bp_get_current_group_slug() ); ?>';
+
+		$.ajax({
+			type: "POST",
+			url: ajaxurl,
+			data: {
+				action: 'generate_menu_options_dropdown',
+				group_slug: group_slug,
+				group_id: group_id
+			},
+			success: function(response) {
+				$('#group-landing-page-select').html(response);
+			}
+		});
+
+		$('input[type=radio][id=hide-or-show-menu]').change(function() {
+			$.ajax({
+				type: "POST",
+				url: ajaxurl,
+				data: {
+					action: 'generate_menu_options_dropdown',
+					menu_option_value: $(this).val(),
+					menu_option_slug: $(this).data("slug"),
+					group_id: group_id,
+					group_slug: group_slug
+				},
+				success: function(response) {
+					$('#group-landing-page-select').html('');
+					$('#group-landing-page-select').html(response);
+				}
+			});
+		});
+	});
+	</script>
 
 	<hr />
 
