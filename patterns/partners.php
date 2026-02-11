@@ -42,7 +42,7 @@
 		<!-- /wp:group -->
 
 		<!-- wp:group {"className":"partner-badge py-40 px-50 rounded-sm","lock":{"move":true,"remove":false},"backgroundColor":"white","layout":{"type":"default"}} -->
-		<a href="https://www.hastac.hcommons.org/" target="_blank" rel="noopener noreferrer" class="wp-block-group partner-badge py-40 px-50 rounded-sm has-white-background-color has-background" data-tooltip="Humanities, Arts, Science, and Technology Alliance">
+		<a href="https://hastac.hcommons.org/" target="_blank" rel="noopener noreferrer" class="wp-block-group partner-badge py-40 px-50 rounded-sm has-white-background-color has-background" data-tooltip="Humanities, Arts, Science, and Technology Alliance">
 			<!-- wp:paragraph {"lock":{"move":true,"remove":false},"className":"text-2xl font-bold","textColor":"teal-light"} -->
 			<p class="has-teal-light-color has-text-color text-2xl font-bold">HASTAC</p>
 			<!-- /wp:paragraph -->
@@ -66,7 +66,7 @@
 		<!-- /wp:group -->
 
 		<!-- wp:group {"className":"partner-badge py-40 px-50 rounded-sm","lock":{"move":true,"remove":false},"backgroundColor":"white","layout":{"type":"default"}} -->
-		<a href="https://www.sah.hcommons.org/" target="_blank" rel="noopener noreferrer" class="wp-block-group partner-badge py-40 px-50 rounded-sm has-white-background-color has-background" data-tooltip="Society of Architectural Historians">
+		<a href="https://sah.hcommons.org/" target="_blank" rel="noopener noreferrer" class="wp-block-group partner-badge py-40 px-50 rounded-sm has-white-background-color has-background" data-tooltip="Society of Architectural Historians">
 			<!-- wp:paragraph {"lock":{"move":true,"remove":false},"className":"text-2xl font-bold","textColor":"teal-light"} -->
 			<p class="has-teal-light-color has-text-color text-2xl font-bold">SAH</p>
 			<!-- /wp:paragraph -->
