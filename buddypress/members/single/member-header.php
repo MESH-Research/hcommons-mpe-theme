@@ -42,7 +42,7 @@
 				$tier = get_user_tier( bp_displayed_user_id() );
 				?>
 
-				<h2 class="member-name"><?php echo bp_get_displayed_user_fullname(); ?></h2>
+				<h2 class="member-name"><?php echo esc_html( bp_get_displayed_user_fullname() ); ?></h2>
 				<p class="member-username">@<?php echo esc_html( bp_get_displayed_user_username() ); ?></p>
 
 				<?php if ( ! empty( $title ) ) : ?>
