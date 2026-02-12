@@ -1203,19 +1203,6 @@
     text-decoration: underline;
 }
 
-#buddypress #item-header-content #item-meta .member-username {
-    display: block;
-    font-size: 0.95rem;
-    color: rgba(26, 95, 78, 0.8);
-    margin: 0.5rem 0;
-    font-weight: 400;
-}
-
-#buddypress #item-header-content #item-meta .member-username span {
-    font-weight: 600;
-    color: rgba(26, 95, 78, 0.7);
-}
-
 /* ==========================================================================
    Messages
    ========================================================================== */
