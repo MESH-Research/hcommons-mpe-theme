@@ -63,9 +63,9 @@
                     </h4>
                 <?php endif; ?>
 
-				<h4 class="member-username">
-					<span>Username:</span> @<?php echo esc_html( bp_get_displayed_user_username() ); ?>
-				</h4>
+                <h4 class="member-username">
+                    <span>Username:</span> @<?php echo esc_html( bp_get_displayed_user_username() ); ?>
+                </h4>
 
 				<div class="member-social-links">
 					<?php
