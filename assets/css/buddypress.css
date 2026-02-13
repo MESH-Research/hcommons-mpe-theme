@@ -1090,6 +1090,21 @@
     margin: 0 0 0.5rem 0;
 }
 
+#buddypress #item-header-content #item-meta .member-username {
+    display: block;
+    font-size: 1rem;
+    color: rgba(26, 95, 78, 0.85);
+    margin: 0.25rem 0 0.75rem 0;
+    font-weight: 400;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+#buddypress #item-header-content #item-meta .member-username:hover {
+    color: #1a5f4e;
+    text-decoration: underline;
+}
+
 #buddypress #item-header-content .item-meta {
     font-size: 1rem;
     color: rgba(26, 95, 78, 0.7);
