@@ -43,7 +43,7 @@
 				?>
 
 				<h2 class="member-name"><?php echo esc_html( bp_get_displayed_user_fullname() ); ?></h2>
-				<p class="member-username">@<?php echo esc_html( bp_get_displayed_user_username() ); ?></p>
+				<a href="<?php echo esc_url( bp_get_displayed_user_link() ); ?>" class="member-username">@<?php echo esc_html( bp_get_displayed_user_username() ); ?></a>
 
 				<?php if ( ! empty( $title ) ) : ?>
 					<h4 class="member-title"><?php echo esc_html( $title ); ?></h4>
