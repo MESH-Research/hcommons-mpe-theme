@@ -51,7 +51,7 @@
 
 				<?php if ( ! empty( $affiliation ) ) : ?>
 					<h4 class="member-affiliation">
-						<a href="<?php echo esc_url( home_url( '/search/?s=' . urlencode( $affiliation ) . '&post_type%5B0%5D=user' ) ); ?>" rel="nofollow">
+						<a href="<?php echo esc_url( home_url( '/search/?q=' . urlencode( $affiliation ) . '&post_type%5B0%5D=user' ) ); ?>" rel="nofollow">
 							<?php echo esc_html( $affiliation ); ?>
 						</a>
 					</h4>

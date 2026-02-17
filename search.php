@@ -42,7 +42,7 @@ get_header(); ?>
 							<circle cx="11" cy="11" r="8"></circle>
 							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
 						</svg>
-						<input type="search" name="s" class="search-form-input" value="<?php echo esc_attr( get_search_query() ); ?>" placeholder="<?php esc_attr_e( 'Search...', 'flavor' ); ?>" />
+						<input type="search" name="q" class="search-form-input" value="<?php echo esc_attr( get_search_query() ); ?>" placeholder="<?php esc_attr_e( 'Search...', 'flavor' ); ?>" />
 						<button type="submit" class="search-form-submit"><?php esc_html_e( 'Search', 'flavor' ); ?></button>
 					</div>
 				</form>
@@ -129,7 +129,7 @@ get_header(); ?>
 								<circle cx="11" cy="11" r="8"></circle>
 								<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
 							</svg>
-							<input type="search" name="s" class="search-form-input" value="<?php echo esc_attr( get_search_query() ); ?>" placeholder="<?php esc_attr_e( 'Try a different search...', 'flavor' ); ?>" />
+							<input type="search" name="q" class="search-form-input" value="<?php echo esc_attr( get_search_query() ); ?>" placeholder="<?php esc_attr_e( 'Try a different search...', 'flavor' ); ?>" />
 							<button type="submit" class="search-form-submit"><?php esc_html_e( 'Search', 'flavor' ); ?></button>
 						</div>
 					</form>
