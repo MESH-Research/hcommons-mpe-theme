@@ -36,7 +36,7 @@ get_header(); ?>
 
 			<!-- Search again form -->
 			<div class="search-again-form">
-				<form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+				<form role="search" method="get" action="<?php echo esc_url( home_url( '/search/' ) ); ?>">
 					<div class="search-form-wrapper">
 						<svg class="search-form-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 							<circle cx="11" cy="11" r="8"></circle>
@@ -123,7 +123,7 @@ get_header(); ?>
 
 				<!-- Search again form -->
 				<div class="search-again-form">
-					<form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+					<form role="search" method="get" action="<?php echo esc_url( home_url( '/search/' ) ); ?>">
 						<div class="search-form-wrapper">
 							<svg class="search-form-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 								<circle cx="11" cy="11" r="8"></circle>

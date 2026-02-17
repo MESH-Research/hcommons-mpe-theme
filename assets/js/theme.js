@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				e.preventDefault();
 				return;
 			}
-			// Form will submit naturally to /?s=query
+			// Form will submit naturally to /search/?s=query
 		});
 	}
 });
