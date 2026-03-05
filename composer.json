@@ -1,0 +1,9 @@
+{
+   "name": "mesh-research/hcommons-mpe-theme",
+   "type": "wordpress-theme",
+   "description": "A WordPress block theme for Knowledge Commons (2026)",
+   "license": "MIT",
+   "require": {
+     "php": ">=8.0"
+   }
+ }
