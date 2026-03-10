@@ -693,3 +693,163 @@ function hcommons_group_landing_page_redirect() {
 }
 add_action( 'bp_actions', 'hcommons_group_landing_page_redirect', 1 );
 
+/**
+ * Unslash xprofile field values before save to prevent wp_magic_quotes()
+ * backslashes from corrupting HTML attributes through wp_kses.
+ */
+function hcommons_unslash_xprofile_value( $value ) {
+    if ( is_string( $value ) ) {
+        return wp_unslash( $value );
+    }
+    return $value;
+}
+add_filter( 'xprofile_data_value_before_save', 'hcommons_unslash_xprofile_value', 0 );
+
+/**
+ * Strip slashes added by wp_rel_nofollow() during the save pipeline.
+ *
+ * BuddyPress's xprofile_sanitize_data_value_before_save calls wp_rel_nofollow()
+ * which calls wp_slash() — designed for WP core's slashed-data pipeline.
+ * BuddyPress uses $wpdb->prepare('%s') which handles its own escaping,
+ * so wp_slash's backslashes become literal \" stored in the DB.
+ */
+add_filter( 'xprofile_filtered_data_value_before_save', 'wp_unslash', 1 );
+
+/**
+ * Allow target attribute on <a> tags in xprofile fields.
+ */
+function hcommons_xprofile_allowed_tags( $allowed_tags ) {
+    if ( isset( $allowed_tags['a'] ) ) {
+        $allowed_tags['a']['target'] = true;
+    }
+    return $allowed_tags;
+}
+add_filter( 'xprofile_allowed_tags', 'hcommons_xprofile_allowed_tags' );
+
+/**
+ * Remove redundant second wp_kses pass on xprofile edit display.
+ * bp_xprofile_escape_field_data runs xprofile_filter_kses again at priority 10,
+ * after it was already applied at priority 1 by xprofile_sanitize_data_value_before_display.
+ */
+function hcommons_fix_xprofile_filter_chain() {
+    add_filter( 'xprofile_filtered_data_value_before_save', 'wp_unslash', 5 );
+    remove_filter( 'bp_get_the_profile_field_edit_value', 'bp_xprofile_escape_field_data', 10 );
+    remove_filter( 'bp_get_the_profile_field_value', 'wptexturize' );
+}
+add_action( 'bp_init', 'hcommons_fix_xprofile_filter_chain' );
+
+/**
+ * Clean already-corrupted xprofile HTML on load (doubled quotes, duplicate rel values,
+ * backslash-quotes from wp_rel_nofollow's wp_slash).
+ * Once data is re-saved through the fixed pipeline, this becomes a no-op.
+ */
+function hcommons_fix_corrupted_xprofile_html( $value ) {
+    if ( empty( $value ) || strpos( $value, '<' ) === false ) {
+        return $value;
+    }
+
+    // Step 1: Normalize curly/smart quotes inside HTML tags only.
+    $value = preg_replace_callback( '/<[^>]+>/', function ( $m ) {
+        return str_replace(
+            array( "\xE2\x80\x9C", "\xE2\x80\x9D", "\xE2\x80\x98", "\xE2\x80\x99" ),
+            array( '"', '"', "'", "'" ),
+            $m[0]
+        );
+    }, $value );
+
+    // Step 2: Strip backslash-quotes left by wp_rel_nofollow's wp_slash().
+    if ( strpos( $value, '\"' ) !== false ) {
+        $value = wp_unslash( $value );
+    }
+
+    // Step 3: Reconstruct <a> tags with proper attribute quoting.
+    $value = preg_replace_callback( '/<a\s([^>]*)>/i', function ( $m ) {
+        $attrs_str = $m[1];
+        do {
+            $prev      = $attrs_str;
+            $attrs_str = str_replace( '""', '"', $attrs_str );
+        } while ( $prev !== $attrs_str );
+
+        $atts = wp_kses_hair( $attrs_str, wp_allowed_protocols() );
+
+        if ( empty( $atts ) ) {
+            return $m[0];
+        }
+
+        $rel_parts = array();
+        $html      = '';
+        foreach ( $atts as $name => $att ) {
+            if ( 'rel' === $name ) {
+                $rel_parts = array_merge( $rel_parts, array_map( 'trim', explode( ' ', $att['value'] ) ) );
+                continue;
+            }
+            if ( isset( $att['vless'] ) && 'y' === $att['vless'] ) {
+                $html .= $name . ' ';
+            } else {
+                $val = $att['value'];
+                if ( 'href' === $name && substr( $val, 0, 2 ) === '//' ) {
+                    $val = 'https:' . $val;
+                }
+                $html .= $name . '="' . esc_attr( $val ) . '" ';
+            }
+        }
+
+        $rel_parts = array_unique( array_filter( $rel_parts ) );
+        if ( ! empty( $rel_parts ) ) {
+            $html .= 'rel="' . esc_attr( implode( ' ', $rel_parts ) ) . '" ';
+        }
+
+        return '<a ' . trim( $html ) . '>';
+    }, $value );
+
+    return $value;
+}
+add_filter( 'bp_get_the_profile_field_edit_value', 'hcommons_fix_corrupted_xprofile_html', 0 );
+add_filter( 'bp_get_the_profile_field_value', 'hcommons_fix_corrupted_xprofile_html', 0 );
+
+/**
+ * Prevent wptexturize from converting straight quotes to curly quotes
+ * in content that passes through the_content filter, which can corrupt
+ * HTML attribute quotes during TinyMCE round-trips.
+ */
+add_filter( 'run_wptexturize', '__return_false' );
+
+/**
+ * Fix TinyMCE Visual/Code round-trip doubling attribute quotes.
+ *
+ * Uses wp_footer to inject JS that hooks into TinyMCE globally,
+ * which is more robust than the teeny_mce_before_init setup parameter
+ * that can be overwritten by other plugins.
+ */
+function hcommons_tinymce_quote_fix_script() {
+    if ( ! did_action( 'bp_init' ) ) {
+        return;
+    }
+    ?>
+    <script>
+    (function() {
+        if ( typeof tinymce === 'undefined' ) return;
+        tinymce.on('AddEditor', function(e) {
+            var editor = e.editor;
+            // Fix doubled quotes when TinyMCE serializes content back to textarea.
+            editor.on('SaveContent', function(ev) {
+                // Collapse any doubled straight quotes in HTML tags.
+                ev.content = ev.content.replace(/<[a-z][^>]*>/gi, function(tag) {
+                    return tag.replace(/""+/g, '"');
+                });
+            });
+            // Fix curly quotes that may appear in content loaded into the editor.
+            editor.on('BeforeSetContent', function(ev) {
+                if ( ! ev.content ) return;
+                // Straighten curly quotes inside HTML tags only.
+                ev.content = ev.content.replace(/<[a-z][^>]*>/gi, function(tag) {
+                    return tag.replace(/[\u201C\u201D]/g, '"').replace(/[\u2018\u2019]/g, "'");
+                });
+            });
+        });
+    })();
+    </script>
+    <?php
+}
+add_action( 'wp_footer', 'hcommons_tinymce_quote_fix_script', 99 );
+
