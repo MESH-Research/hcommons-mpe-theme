@@ -35,7 +35,7 @@ html {
 }
 
 /* Override WordPress teal text colors to use black */
-.follow-button, #post-mention, #send-private-message {
+#post-mention, #send-private-message {
     display: none !important;
 }
 

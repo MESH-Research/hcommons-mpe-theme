@@ -3386,3 +3386,62 @@ span.admin-links a:hover,
 #buddypress #item-header-cover-image #item-header-avatar img.avatar {
     border: none !important;
 }
+
+/* ==========================================================================
+   SEO Heading Overrides
+   Override theme.json heading defaults inside profile header to preserve
+   visual appearance after h2→h1, h4→h2/h3 tag changes.
+   ========================================================================== */
+
+#buddypress #item-meta h1.member-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+}
+
+#buddypress #item-meta h2.member-title {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #000;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+}
+
+#buddypress #item-meta h3.member-affiliation {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #000;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+}
+
+/* Member directory item-title heading override */
+#buddypress #members-list h3.item-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.4;
+    color: inherit;
+}
+
+/* ==========================================================================
+   Follow Button
+   ========================================================================== */
+
+#buddypress .follow-button a {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border: 1px solid #1a5f4e;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #1a5f4e;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#buddypress .follow-button a:hover {
+    background-color: #1a5f4e;
+    color: white;
+}
