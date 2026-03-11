@@ -2878,7 +2878,7 @@ span.admin-links a:hover,
 #buddypress form > .editfield,
 #buddypress .standard-form > div.editfield,
 #buddypress #profile-edit-form > div.editfield {
-    display: block !important;
+    display: block;
     float: none !important;
     width: 100% !important;
 }
@@ -2914,7 +2914,7 @@ span.admin-links a:hover,
 #buddypress .editfield textarea,
 #buddypress .standard-form .editfield input[type="text"],
 #buddypress .standard-form .editfield textarea {
-    display: block !important;
+    display: block;
     width: 100% !important;
     max-width: 100% !important;
     padding: 0.75rem 1rem !important;
