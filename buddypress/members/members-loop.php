@@ -43,9 +43,9 @@
 			</div>
 
 			<div class="item">
-				<div class="item-title">
+				<h3 class="item-title">
 					<a href="<?php echo esc_url( bp_get_member_permalink() ); ?>"><?php bp_member_name(); ?></a>
-				</div>
+				</h3>
 
                 <?php
                 $showing = null;

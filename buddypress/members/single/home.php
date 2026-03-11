@@ -2,7 +2,7 @@
 
 	<?php do_action( 'bp_before_member_home_content' ); ?>
 
-	<div id="item-header" role="complementary">
+	<div id="item-header">
 
 		<?php bp_get_template_part( 'members/single/member-header' ) ?>
 
@@ -11,7 +11,7 @@
     <div class="full-width">
         <div id="item-main-content">
             <div id="item-nav">
-                <div class="item-list-tabs no-ajax" id="object-nav" role="navigation">
+                <div class="item-list-tabs no-ajax" id="object-nav" role="navigation" aria-label="Member primary navigation">
                     <ul id="nav-bar-filter">
 
                         <?php bp_get_displayed_user_nav(); ?>
