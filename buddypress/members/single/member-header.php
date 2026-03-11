@@ -112,7 +112,13 @@
 					<?php endif; ?>
 				</div>
 
-				<span class="activity"><?php bp_last_activity( bp_displayed_user_id() ); ?></span>
+				<?php if ( is_user_logged_in() && ! bp_is_my_profile() && function_exists( 'bp_follow_add_follow_button' ) ) : ?>
+				<div class="member-follow-action">
+					<?php bp_follow_add_follow_button(); ?>
+				</div>
+			<?php endif; ?>
+
+			<span class="activity"><?php bp_last_activity( bp_displayed_user_id() ); ?></span>
 
                 <?php if ( bp_is_my_profile() || current_user_can( 'manage_options' ) ) : ?>
                     <div class="member-change-links">
