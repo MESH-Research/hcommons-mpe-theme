@@ -42,26 +42,26 @@
 				$tier = get_user_tier( bp_displayed_user_id() );
 				?>
 
-				<h2 class="member-name"><?php echo esc_html( bp_get_displayed_user_fullname() ); ?></h2>
+				<h1 class="member-name"><?php echo esc_html( bp_get_displayed_user_fullname() ); ?></h1>
 				<a href="<?php echo esc_url( bp_get_displayed_user_link() ); ?>" class="member-username">@<?php echo esc_html( bp_get_displayed_user_username() ); ?></a>
 
 				<?php if ( ! empty( $title ) ) : ?>
-					<h4 class="member-title"><?php echo esc_html( $title ); ?></h4>
+					<h2 class="member-title"><?php echo esc_html( $title ); ?></h2>
 				<?php endif; ?>
 
 				<?php if ( ! empty( $affiliation ) ) : ?>
-					<h4 class="member-affiliation">
+					<h3 class="member-affiliation">
 						<a href="<?php echo esc_url( home_url( '/search/?q=' . urlencode( $affiliation ) . '&post_type%5B0%5D=user' ) ); ?>" rel="nofollow">
 							<?php echo esc_html( $affiliation ); ?>
 						</a>
-					</h4>
+					</h3>
 				<?php endif; ?>
 
                 <?php if ( $tier ) : ?>
-                    <h4 class="member-affiliation">
+                    <h3 class="member-affiliation">
                         <a href="https://about.hcommons.org/kc-champions/"><span>KC Champion:</span>
                         <?php display_user_tier_badge( bp_displayed_user_id() ); ?></a>
-                    </h4>
+                    </h3>
                 <?php endif; ?>
 
 				<div class="member-social-links">
@@ -160,7 +160,7 @@
 
 			<div id="item-actions">
 				<?php if ( bp_is_active( 'friends' ) && function_exists( 'friends_get_total_friend_count' ) ) : ?>
-					<h2><?php esc_html_e( 'Friends', 'flavor' ); ?></h2>
+					<h3><?php esc_html_e( 'Friends', 'flavor' ); ?></h3>
 					<p><?php echo (int) friends_get_total_friend_count( bp_displayed_user_id() ); ?></p>
 				<?php endif; ?>
 			</div><!-- #item-actions -->
