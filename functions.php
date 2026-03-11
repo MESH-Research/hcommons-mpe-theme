@@ -853,3 +853,172 @@ function hcommons_tinymce_quote_fix_script() {
 }
 add_action( 'wp_footer', 'hcommons_tinymce_quote_fix_script', 99 );
 
+/**
+ * Output Schema.org Person JSON-LD markup on BuddyPress member profiles.
+ */
+function hcommons_bp_member_schema_markup() {
+	if ( ! function_exists( 'bp_is_user' ) || ! bp_is_user() ) {
+		return;
+	}
+
+	$user_id = bp_displayed_user_id();
+	$name    = bp_get_displayed_user_fullname();
+	$url     = bp_displayed_user_domain();
+
+	$schema = array(
+		'@context' => 'https://schema.org',
+		'@type'    => 'Person',
+		'name'     => $name,
+		'url'      => $url,
+	);
+
+	// Avatar
+	$avatar_url = bp_core_fetch_avatar( array(
+		'item_id' => $user_id,
+		'type'    => 'full',
+		'html'    => false,
+	) );
+	if ( ! empty( $avatar_url ) ) {
+		$schema['image'] = $avatar_url;
+	}
+
+	// xprofile fields
+	if ( function_exists( 'xprofile_get_field_data' ) ) {
+		$title       = xprofile_get_field_data( 'Title', $user_id );
+		$affiliation = xprofile_get_field_data( 'Institutional or Other Affiliation', $user_id );
+		$mastodon    = xprofile_get_field_data( 'Mastodon handle', $user_id );
+		$orcid       = xprofile_get_field_data( '<em>ORCID</em> iD', $user_id );
+		$website     = xprofile_get_field_data( 'Website', $user_id );
+
+		if ( ! empty( $title ) ) {
+			$schema['jobTitle'] = $title;
+		}
+		if ( ! empty( $affiliation ) ) {
+			$schema['affiliation'] = array(
+				'@type' => 'Organization',
+				'name'  => $affiliation,
+			);
+		}
+
+		$same_as = array();
+		if ( ! empty( $mastodon ) ) {
+			$mastodon_clean = ltrim( $mastodon, '@' );
+			if ( strpos( $mastodon_clean, '@' ) !== false ) {
+				$parts     = explode( '@', $mastodon_clean );
+				$same_as[] = 'https://' . $parts[1] . '/@' . $parts[0] . '/';
+			}
+		}
+		if ( ! empty( $orcid ) ) {
+			$orcid_id  = preg_replace( '/^https?:\/\/orcid\.org\//', '', $orcid );
+			$same_as[] = 'https://orcid.org/' . $orcid_id;
+		}
+		if ( ! empty( $website ) ) {
+			$same_as[] = $website;
+		}
+		if ( ! empty( $same_as ) ) {
+			$schema['sameAs'] = $same_as;
+		}
+	}
+
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}
+add_action( 'wp_head', 'hcommons_bp_member_schema_markup' );
+
+/**
+ * Output meta description tag on BuddyPress member profiles.
+ */
+function hcommons_bp_member_meta_description() {
+	if ( ! function_exists( 'bp_is_user' ) || ! bp_is_user() ) {
+		return;
+	}
+
+	$name  = bp_get_displayed_user_fullname();
+	$parts = array( $name );
+
+	if ( function_exists( 'xprofile_get_field_data' ) ) {
+		$title       = xprofile_get_field_data( 'Title', bp_displayed_user_id() );
+		$affiliation = xprofile_get_field_data( 'Institutional or Other Affiliation', bp_displayed_user_id() );
+
+		if ( ! empty( $title ) && ! empty( $affiliation ) ) {
+			$parts[] = $title . ' at ' . $affiliation;
+		} elseif ( ! empty( $title ) ) {
+			$parts[] = $title;
+		} elseif ( ! empty( $affiliation ) ) {
+			$parts[] = $affiliation;
+		}
+	}
+
+	$parts[]     = 'Member of Knowledge Commons.';
+	$description = implode( ' — ', array_slice( $parts, 0, -1 ) ) . '. ' . end( $parts );
+
+	echo '<meta name="description" content="' . esc_attr( $description ) . '">' . "\n";
+}
+add_action( 'wp_head', 'hcommons_bp_member_meta_description' );
+
+/**
+ * Output Open Graph tags on BuddyPress member profiles if Jetpack isn't handling them.
+ */
+function hcommons_bp_member_og_tags() {
+	if ( ! function_exists( 'bp_is_user' ) || ! bp_is_user() ) {
+		return;
+	}
+
+	if ( has_action( 'wp_head', 'jetpack_og_tags' ) ) {
+		return;
+	}
+
+	$user_id = bp_displayed_user_id();
+	$name    = bp_get_displayed_user_fullname();
+	$url     = bp_displayed_user_domain();
+
+	// Build description
+	$desc_parts = array( $name );
+	if ( function_exists( 'xprofile_get_field_data' ) ) {
+		$title       = xprofile_get_field_data( 'Title', $user_id );
+		$affiliation = xprofile_get_field_data( 'Institutional or Other Affiliation', $user_id );
+		if ( ! empty( $title ) ) {
+			$desc_parts[] = $title;
+		}
+		if ( ! empty( $affiliation ) ) {
+			$desc_parts[] = $affiliation;
+		}
+	}
+	$description = implode( ' — ', $desc_parts );
+
+	$avatar_url = bp_core_fetch_avatar( array(
+		'item_id' => $user_id,
+		'type'    => 'full',
+		'html'    => false,
+	) );
+
+	echo '<meta property="og:title" content="' . esc_attr( $name ) . '">' . "\n";
+	echo '<meta property="og:description" content="' . esc_attr( $description ) . '">' . "\n";
+	echo '<meta property="og:type" content="profile">' . "\n";
+	echo '<meta property="og:url" content="' . esc_url( $url ) . '">' . "\n";
+	if ( ! empty( $avatar_url ) ) {
+		echo '<meta property="og:image" content="' . esc_url( $avatar_url ) . '">' . "\n";
+	}
+	echo '<meta property="profile:username" content="' . esc_attr( bp_get_displayed_user_username() ) . '">' . "\n";
+}
+add_action( 'wp_head', 'hcommons_bp_member_og_tags' );
+
+/**
+ * Output noindex/nofollow on private BuddyPress member pages.
+ */
+function hcommons_bp_private_pages_noindex() {
+	if ( ! function_exists( 'bp_is_user' ) || ! bp_is_user() ) {
+		return;
+	}
+
+	$private_components = array( 'messages', 'notifications', 'settings' );
+	$private_actions    = array( 'edit', 'change-avatar' );
+
+	$component = bp_current_component();
+	$action    = bp_current_action();
+
+	if ( in_array( $component, $private_components, true ) || in_array( $action, $private_actions, true ) ) {
+		echo '<meta name="robots" content="noindex, nofollow">' . "\n";
+	}
+}
+add_action( 'wp_head', 'hcommons_bp_private_pages_noindex' );
+
