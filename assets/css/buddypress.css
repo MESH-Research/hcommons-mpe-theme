@@ -3491,3 +3491,6 @@ span.admin-links a:hover,
     float: none !important;
 }
 
+.eo-venue-combobox-select {
+    display: none !important;
+}
