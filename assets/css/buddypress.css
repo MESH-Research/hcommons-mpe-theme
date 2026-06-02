@@ -3494,3 +3494,7 @@ span.admin-links a:hover,
 .eo-venue-combobox-select {
     display: none !important;
 }
+
+.venue_row {
+    display: none !important;
+}
