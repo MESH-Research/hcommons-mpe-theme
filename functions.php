@@ -9,6 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Pure, WordPress-independent helpers.
+require_once __DIR__ . '/inc/works-url.php';
+
 /**
  * Theme setup
  */
@@ -310,6 +313,54 @@ function hcommons_render_blog_section( $block_content, $block ) {
 	return $block_content;
 }
 add_filter( 'render_block', 'hcommons_render_blog_section', 10, 2 );
+
+/**
+ * Get the KCWorks site URL for the current environment.
+ *
+ * The Works site lives at the `works.` subdomain of the network's base
+ * domain, so it resolves consistently no matter which site of the network is
+ * being served: hcommons-test.org -> works.hcommons-test.org, hcommons-dev.org
+ * -> works.hcommons-dev.org, and production hcommons.org -> works.hcommons.org.
+ *
+ * The network domain is the authoritative base domain; on a single-site
+ * install (or if the network is unavailable) we fall back to the current
+ * site's host.
+ *
+ * @return string Fully-qualified Works site URL.
+ */
+function hcommons_get_works_url() {
+	$host = '';
+
+	if ( is_multisite() ) {
+		$network = get_network();
+		if ( $network && ! empty( $network->domain ) ) {
+			$host = $network->domain;
+		}
+	}
+
+	if ( '' === $host ) {
+		$host = wp_parse_url( get_site_url(), PHP_URL_HOST );
+	}
+
+	return hcommons_works_url_from_host( (string) $host );
+}
+
+/**
+ * Point Works links at the environment-appropriate KCWorks site.
+ *
+ * The header template part and the hero/features patterns all link to the
+ * canonical production URL (https://works.hcommons.org). On non-production
+ * environments this filter rewrites that URL at render time so the link stays
+ * within the current environment.
+ *
+ * @param string $block_content Rendered block HTML.
+ * @param array  $block         Parsed block data.
+ * @return string Block HTML with Works links rewritten for the environment.
+ */
+function hcommons_filter_works_links( $block_content, $block ) {
+	return hcommons_rewrite_works_links( $block_content, hcommons_get_works_url() );
+}
+add_filter( 'render_block', 'hcommons_filter_works_links', 10, 2 );
 
 /**
  * Render header account area shortcode
