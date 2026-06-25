@@ -26,6 +26,13 @@ $cases = array(
 	'WWW.HCommons.ORG'             => 'https://works.hcommons.org',
 	// Idempotent: a works. host stays a single works. host.
 	'works.hcommons.org'           => 'https://works.hcommons.org',
+	// Network subdomains resolve to the network's Works site, NOT a
+	// works.<subdomain> host: the Works site is shared across the network.
+	'stemedplus.hcommons.org'      => 'https://works.hcommons.org',
+	'stemedplus.hcommons-dev.org'  => 'https://works.hcommons-dev.org',
+	'stemedplus.hcommons-test.org' => 'https://works.hcommons-test.org',
+	// Subdomain reduction is case-insensitive and ignores a leading www.
+	'WWW.StemEdPlus.HCommons.ORG'  => 'https://works.hcommons.org',
 	// Local Lando development host.
 	'commons-wordpress.lndo.site'  => 'https://works.commons-wordpress.lndo.site',
 	// Empty/invalid host falls back to the production Works URL.

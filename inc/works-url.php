@@ -41,6 +41,15 @@ if ( ! function_exists( 'hcommons_works_url_from_host' ) ) {
 			return 'https://' . $host;
 		}
 
+		// The Works site is shared across the whole HCommons network, so any
+		// network subdomain (e.g. stemedplus.hcommons.org) must resolve to the
+		// network's base Works site, not a works.<subdomain> host. Reduce the
+		// host to the HCommons base domain (hcommons[-env].org) when it ends in
+		// one. Non-HCommons hosts (e.g. local *.lndo.site) are left untouched.
+		if ( preg_match( '/(?:^|\.)(hcommons(?:-[a-z0-9-]+)?\.org)$/', $host, $matches ) ) {
+			return 'https://works.' . $matches[1];
+		}
+
 		return 'https://works.' . $host;
 	}
 }
