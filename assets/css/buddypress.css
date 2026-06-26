@@ -321,7 +321,12 @@
 }
 
 #buddypress .item-list-tabs ul li a span {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 44px;
+    min-height: 44px;
     padding: 0.125rem 0.5rem;
     margin-left: 0.375rem;
     font-size: 1rem;
