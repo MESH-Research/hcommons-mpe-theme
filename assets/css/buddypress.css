@@ -784,7 +784,7 @@
 }
 
 #buddypress .activity-header .time-since {
-    color: rgba(26, 95, 78, 0.6);
+    color: #567B76;
     font-size: 1rem;
 }
 
@@ -812,7 +812,7 @@
 
 #buddypress .activity-meta a {
     font-size: 1rem;
-    color: rgba(26, 95, 78, 0.6);
+    color: #567B76;
     text-decoration: none;
     transition: color 0.3s ease;
 }
