@@ -298,9 +298,15 @@
     display: flex;
 }
 
-#buddypress .item-list-tabs ul li a {
+/*
+ * bp-legacy ships a more specific `#buddypress div.item-list-tabs ul li a`
+ * rule, so match that specificity (and force the display) to ensure the link
+ * is a flex container. Otherwise its label (e.g. RSS) sits at the top of the
+ * row-stretched tab instead of being vertically centred.
+ */
+#buddypress div.item-list-tabs ul li a {
     /* Flex so the link fills its stretched li and its label/badge stay centred. */
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     padding: 0.625rem 1.25rem;
