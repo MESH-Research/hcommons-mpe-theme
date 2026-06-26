@@ -1462,11 +1462,6 @@ a.partner-badge {
 
 .footer-legal-nav .wp-block-navigation-item a {
     font-size: 1rem;
-    opacity: 0.6;
-}
-
-.footer-legal-nav .wp-block-navigation-item a:hover {
-    opacity: 1;
 }
 
 .footer .wp-block-separator {
