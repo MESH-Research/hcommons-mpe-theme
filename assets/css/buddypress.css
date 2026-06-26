@@ -326,12 +326,14 @@
     margin-left: 0.375rem;
     font-size: 1rem;
     font-weight: 600;
+    color: #595959;
     background-color: rgba(26, 95, 78, 0.1);
     border-radius: 9999px;
 }
 
 #buddypress .item-list-tabs ul li.selected a span,
 #buddypress .item-list-tabs ul li.current a span {
+    color: #ffffff;
     background-color: rgba(255, 255, 255, 0.2);
 }
 
