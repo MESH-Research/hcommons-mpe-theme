@@ -9,6 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Pure, WordPress-independent helpers.
+require_once __DIR__ . '/inc/works-url.php';
+
 /**
  * Theme setup
  */
@@ -312,6 +315,54 @@ function hcommons_render_blog_section( $block_content, $block ) {
 add_filter( 'render_block', 'hcommons_render_blog_section', 10, 2 );
 
 /**
+ * Get the KCWorks site URL for the current environment.
+ *
+ * The Works site lives at the `works.` subdomain of the network's base
+ * domain, so it resolves consistently no matter which site of the network is
+ * being served: hcommons-test.org -> works.hcommons-test.org, hcommons-dev.org
+ * -> works.hcommons-dev.org, and production hcommons.org -> works.hcommons.org.
+ *
+ * The network domain is the authoritative base domain; on a single-site
+ * install (or if the network is unavailable) we fall back to the current
+ * site's host.
+ *
+ * @return string Fully-qualified Works site URL.
+ */
+function hcommons_get_works_url() {
+	$host = '';
+
+	if ( is_multisite() ) {
+		$network = get_network();
+		if ( $network && ! empty( $network->domain ) ) {
+			$host = $network->domain;
+		}
+	}
+
+	if ( '' === $host ) {
+		$host = wp_parse_url( get_site_url(), PHP_URL_HOST );
+	}
+
+	return hcommons_works_url_from_host( (string) $host );
+}
+
+/**
+ * Point Works links at the environment-appropriate KCWorks site.
+ *
+ * The header template part and the hero/features patterns all link to the
+ * canonical production URL (https://works.hcommons.org). On non-production
+ * environments this filter rewrites that URL at render time so the link stays
+ * within the current environment.
+ *
+ * @param string $block_content Rendered block HTML.
+ * @param array  $block         Parsed block data.
+ * @return string Block HTML with Works links rewritten for the environment.
+ */
+function hcommons_filter_works_links( $block_content, $block ) {
+	return hcommons_rewrite_works_links( $block_content, hcommons_get_works_url() );
+}
+add_filter( 'render_block', 'hcommons_filter_works_links', 10, 2 );
+
+/**
  * Render header account area shortcode
  *
  * Shows user avatar, name, and notifications when logged in,
@@ -561,11 +612,10 @@ add_filter( 'bp_groups_get_paged_groups_sql', 'hcommons_groups_sql_show_user_hid
 add_filter( 'bp_groups_get_total_groups_sql', 'hcommons_groups_sql_show_user_hidden' );
 
 /**
- * Save group admin settings for hidden nav tabs and landing page
+ * Save group admin settings for hidden nav tabs
  *
  * Hooks into the group settings save action to persist the admin's choices
- * for which navigation items to show/hide and which page to use as the
- * default landing page.
+ * for which navigation items to show or hide from regular members.
  *
  * @param int $group_id The ID of the group being edited.
  */
@@ -596,12 +646,6 @@ function hcommons_save_group_nav_settings( $group_id ) {
 
 	// Save hidden tabs to group meta
 	groups_update_groupmeta( $group_id, 'group_hidden_tabs', array_values( $hidden_tabs ) );
-
-	// Save landing page setting
-	if ( isset( $_POST['group-landing-page'] ) ) {
-		$landing_page = sanitize_text_field( $_POST['group-landing-page'] );
-		groups_update_groupmeta( $group_id, 'group_landing_page', $landing_page );
-	}
 }
 add_action( 'groups_group_settings_edited', 'hcommons_save_group_nav_settings' );
 
@@ -642,56 +686,6 @@ function hcommons_filter_group_nav_items() {
 	}
 }
 add_action( 'bp_actions', 'hcommons_filter_group_nav_items', 5 );
-
-/**
- * Redirect to group landing page when visiting group home
- *
- * When a group admin has set a custom landing page, redirect members
- * to that page instead of the default home/activity page.
- */
-function hcommons_group_landing_page_redirect() {
-	if ( ! bp_is_group() || ! bp_is_single_item() ) {
-		return;
-	}
-
-	$group_id = bp_get_current_group_id();
-	$landing_page = groups_get_groupmeta( $group_id, 'group_landing_page', true );
-
-	// Only redirect if a landing page is set and we're on the group home
-	if ( empty( $landing_page ) ) {
-		return;
-	}
-
-	// Get current action (the nav item slug we're viewing)
-	$current_action = bp_current_action();
-
-	// Only redirect from home/empty action to the landing page
-	// Don't redirect if we're already on another page or the landing page itself
-	if ( ! empty( $current_action ) && 'home' !== $current_action ) {
-		return;
-	}
-
-	// Don't redirect admins/mods if landing page is hidden
-	$hidden_tabs = groups_get_groupmeta( $group_id, 'group_hidden_tabs', true );
-	if ( ! bp_is_item_admin() && ! bp_is_item_mod() ) {
-		if ( is_array( $hidden_tabs ) && in_array( $landing_page, $hidden_tabs, true ) ) {
-			return; // Landing page is hidden from this user, don't redirect
-		}
-	}
-
-	// Build the redirect URL
-	$group_permalink = bp_get_group_url( groups_get_current_group() );
-	$redirect_url = trailingslashit( $group_permalink ) . $landing_page . '/';
-
-	// Prevent redirect loop
-	$current_url = bp_get_requested_url();
-	if ( trailingslashit( $current_url ) === trailingslashit( $redirect_url ) ) {
-		return;
-	}
-
-	bp_core_redirect( $redirect_url );
-}
-add_action( 'bp_actions', 'hcommons_group_landing_page_redirect', 1 );
 
 /**
  * Unslash xprofile field values before save to prevent wp_magic_quotes()
