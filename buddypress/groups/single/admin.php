@@ -41,7 +41,8 @@
 
 	<?php do_action( 'bp_before_group_settings_admin' ); ?>
 
-	<?php if ( bp_is_active( 'forums' ) ) : ?>
+	<?php /* Legacy forums were removed in BuddyPress 12, but 'forums' may linger in the bp-active-components option. */ ?>
+	<?php if ( bp_is_active( 'forums' ) && function_exists( 'bp_forums_is_installed_correctly' ) ) : ?>
 
 		<?php if ( bp_forums_is_installed_correctly() ) : ?>
 
