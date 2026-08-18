@@ -28,6 +28,8 @@
 			if ( function_exists( 'bp_docs_locate_template' ) ) {
 				// Check for create/edit page
 				if ( function_exists( 'bp_docs_is_doc_create' ) && bp_docs_is_doc_create() ) {
+					// Show the "Create a Doc" page title
+					hcommons_bp_docs_the_page_title();
 					bp_docs_locate_template( 'single/edit.php', true );
 				} elseif ( function_exists( 'bp_docs_is_doc_edit' ) && bp_docs_is_doc_edit() ) {
 					// Show document title when editing
@@ -44,6 +46,12 @@
 					}
 					bp_docs_locate_template( 'single/index.php', true );
 				} else {
+					// Show the directory title on the sitewide directories only;
+					// group docs lists render their own breadcrumb heading.
+					if ( ( function_exists( 'bp_docs_is_global_directory' ) && bp_docs_is_global_directory() )
+						|| ( function_exists( 'bp_docs_is_mygroups_directory' ) && bp_docs_is_mygroups_directory() ) ) {
+						hcommons_bp_docs_the_page_title();
+					}
 					// Default to docs directory/list
 					bp_docs_locate_template( 'docs-loop.php', true );
 				}

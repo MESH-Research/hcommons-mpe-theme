@@ -25,6 +25,12 @@
 		<div id="buddypress">
 			<?php do_action( 'template_notices' ); ?>
 			<?php
+			// Show the directory title on the sitewide directories only;
+			// group docs lists render their own breadcrumb heading.
+			if ( ( function_exists( 'bp_docs_is_global_directory' ) && bp_docs_is_global_directory() )
+				|| ( function_exists( 'bp_docs_is_mygroups_directory' ) && bp_docs_is_mygroups_directory() ) ) {
+				hcommons_bp_docs_the_page_title();
+			}
 			// Try BP Docs specific content loading
 			if ( function_exists( 'bp_docs_locate_template' ) ) {
 				bp_docs_locate_template( 'docs-loop.php', true );

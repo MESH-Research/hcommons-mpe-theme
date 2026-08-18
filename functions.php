@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Pure, WordPress-independent helpers.
 require_once __DIR__ . '/inc/works-url.php';
+require_once __DIR__ . '/inc/bp-docs-title.php';
 
 /**
  * Theme setup
@@ -179,6 +180,57 @@ function hcommons_bp_docs_template( $template ) {
 	return $template;
 }
 add_filter( 'template_include', 'hcommons_bp_docs_template', 99 );
+
+/**
+ * Get the page title for the current BuddyPress Docs screen.
+ *
+ * The theme bypasses BuddyPress theme compat for Docs pages (see
+ * hcommons_bp_docs_template()), so the dummy-post title BuddyPress Docs
+ * normally supplies is never rendered. This rebuilds that title from the
+ * plugin's own sources: "Create a Doc" on the creation screen, and the
+ * configured Docs directory title elsewhere.
+ *
+ * @return string The title for the current Docs screen.
+ */
+function hcommons_bp_docs_current_page_title() {
+	$view = ( function_exists( 'bp_docs_is_doc_create' ) && bp_docs_is_doc_create() ) ? 'create' : 'directory';
+
+	$directory_title = function_exists( 'bp_docs_get_docs_directory_title' )
+		? bp_docs_get_docs_directory_title()
+		: '';
+
+	return hcommons_bp_docs_page_title( $view, $directory_title );
+}
+
+/**
+ * Output the page heading for the current BuddyPress Docs screen.
+ *
+ * Uses the same h2.doc-title markup the Docs templates already use for
+ * single-doc views, so existing theme styles apply.
+ */
+function hcommons_bp_docs_the_page_title() {
+	echo '<h2 class="doc-title">' . esc_html( hcommons_bp_docs_current_page_title() ) . '</h2>';
+}
+
+/**
+ * Fix the document <title> on the Docs directory and create screens.
+ *
+ * Both screens run as the bp_doc post-type archive, so WordPress titles them
+ * all with the generic post type label ("Docs"). Use the real screen title
+ * instead. Single docs are is_singular queries and already get the doc's own
+ * title, so they are left alone.
+ *
+ * @param array $title The document title parts.
+ * @return array Filtered title parts.
+ */
+function hcommons_bp_docs_document_title_parts( $title ) {
+	if ( function_exists( 'bp_docs_is_doc_create' ) && is_post_type_archive( 'bp_doc' ) ) {
+		$title['title'] = hcommons_bp_docs_current_page_title();
+	}
+
+	return $title;
+}
+add_filter( 'document_title_parts', 'hcommons_bp_docs_document_title_parts' );
 
 /**
  * Get the blog ID for the "about" site based on environment
