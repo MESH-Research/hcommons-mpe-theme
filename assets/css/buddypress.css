@@ -3531,3 +3531,270 @@ span.admin-links a:hover,
 .venue_row {
     display: none !important;
 }
+
+/* ==========================================================================
+   Group Send Invites (Invite Anyone / BP send-invites)
+   ========================================================================== */
+
+/*
+ * Both the invite-anyone plugin stylesheet (.invite-anyone .left-menu /
+ * .main-column floats) and bp-legacy (form.standard-form floats) lay this
+ * screen out with early-2010s floats that depend on the .clear elements this
+ * theme hides, so the columns escape the #item-body card and the submit
+ * button gets pushed off its right edge. Everything here is scoped to
+ * #send-invite-form (the group Send Invites tab) so the group-creation
+ * invites step and other screens are unaffected.
+ */
+
+/* Intro row: "Want to invite someone…" prompt + email-invitations button */
+#buddypress .send-invitations-by-email-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(26, 95, 78, 0.1);
+}
+
+#buddypress .send-invitations-by-email-wrap a.button {
+    float: none;
+    flex-shrink: 0;
+    margin: 0;
+}
+
+/* Replace the float columns with flex columns contained by the card. */
+#buddypress form#send-invite-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 0;
+}
+
+#buddypress #send-invite-form .left-menu,
+#buddypress #send-invite-form .main-column {
+    float: none;
+    width: auto;
+    margin: 0;
+}
+
+#buddypress #send-invite-form .left-menu {
+    flex: 1 1 260px;
+    min-width: 240px;
+}
+
+/*
+ * On large networks invite-anyone suppresses the member directory, leaving
+ * the left column holding nothing but a hidden nonce field; drop the empty
+ * column so the main panel spans the full card width.
+ */
+#buddypress #send-invite-form .left-menu:not(:has(li)) {
+    display: none;
+}
+
+#buddypress #send-invite-form .main-column {
+    flex: 2 1 340px;
+    min-width: 0;
+}
+
+#buddypress #send-invite-form .left-menu > p,
+#buddypress #send-invite-form .bb-search-members-to-invite-title {
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+/* Member directory checklist (shown on smaller networks) */
+#buddypress #send-invite-form #invite-anyone-member-list,
+#buddypress #send-invite-form #invite-list {
+    height: auto;
+    max-height: 320px;
+    width: auto;
+    overflow: auto;
+    padding: 0.75rem 1rem;
+    background-color: #faf8f5;
+    border: 1px solid rgba(26, 95, 78, 0.2);
+    border-radius: 0.75rem;
+}
+
+#buddypress #send-invite-form #invite-anyone-member-list ul,
+#buddypress #send-invite-form #invite-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#buddypress #send-invite-form #invite-anyone-member-list ul li,
+#buddypress #send-invite-form #invite-list ul li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.375rem 0;
+}
+
+#buddypress #send-invite-form #invite-anyone-member-list input[type="checkbox"],
+#buddypress #send-invite-form #invite-list input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+/*
+ * bp-legacy paints notice paragraphs yellow (#buddypress div#message p),
+ * which inside the themed notice produces a jarring box-within-a-box;
+ * flatten the inner paragraph so only the themed notice shows.
+ */
+#buddypress #send-invite-form #message p {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+/* Autocomplete search field */
+#buddypress #send-invite-form ul.acfb-holder {
+    list-style: none;
+    margin: 0 0 1.5rem 0;
+    padding: 0;
+}
+
+#buddypress #send-invite-form ul.acfb-holder li {
+    margin: 0;
+    padding: 0;
+}
+
+#buddypress #send-invite-form input#send-to-input {
+    width: 100%;
+    max-width: 480px;
+}
+
+/* Pending-invites list */
+#buddypress #send-invite-form ul#invite-anyone-invite-list,
+#buddypress #send-invite-form ul#friend-list {
+    float: none;
+    clear: both;
+    margin: 0;
+}
+
+#buddypress #send-invite-form ul#invite-anyone-invite-list > li,
+#buddypress #send-invite-form ul#friend-list > li {
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+}
+
+#buddypress #send-invite-form ul#invite-anyone-invite-list > li:hover,
+#buddypress #send-invite-form ul#friend-list > li:hover {
+    transform: none;
+}
+
+#buddypress #send-invite-form ul#invite-anyone-invite-list li img.avatar {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+#buddypress #send-invite-form ul#invite-anyone-invite-list li h4,
+#buddypress #send-invite-form ul#friend-list li h5 {
+    /* bp-legacy gives item-list headings width: 75%, which forces the
+       action button onto its own row; let flex size it instead. */
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 160px;
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+#buddypress #send-invite-form ul#invite-anyone-invite-list li h4 a,
+#buddypress #send-invite-form ul#friend-list li h5 a {
+    color: #000000;
+    text-decoration: none;
+}
+
+#buddypress #send-invite-form ul#invite-anyone-invite-list li .activity,
+#buddypress #send-invite-form ul#friend-list li .activity {
+    color: rgba(26, 95, 78, 0.7);
+    font-size: 1rem;
+}
+
+/* bp-legacy absolutely positions item-list actions; keep them in flow */
+#buddypress #send-invite-form .action {
+    position: static;
+    top: auto;
+    right: auto;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+#buddypress #send-invite-form .action a.remove {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000000;
+    background-color: transparent;
+    border: 1px solid rgba(26, 95, 78, 0.3);
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+#buddypress #send-invite-form .action a.remove:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* Submit row: full-width flex row inside the card, button at the end */
+#buddypress #send-invite-form div.submit {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    float: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* The plugin JS disables the button until someone is selected */
+#buddypress #send-invite-form input.submit-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+#buddypress #send-invite-form input.submit-disabled:hover {
+    background-color: #49665E;
+    transform: none;
+    box-shadow: none;
+}
+
+@media (max-width: 768px) {
+    #buddypress form#send-invite-form {
+        gap: 1.5rem;
+    }
+
+    #buddypress #send-invite-form .left-menu,
+    #buddypress #send-invite-form .main-column {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    #buddypress #send-invite-form input#send-to-input {
+        max-width: 100%;
+    }
+
+    #buddypress #send-invite-form .action {
+        margin-left: 0;
+    }
+
+    #buddypress #send-invite-form div.submit input[type="submit"] {
+        width: 100%;
+    }
+}
