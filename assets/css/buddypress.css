@@ -669,6 +669,13 @@
     background-color: #1b5e20;
     box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
     transform: translateY(-1px);
+    /* Re-assert text colour and border on hover: bp-legacy's
+       equal-specificity hover rule sets color: #555 and
+       border: 1px solid #bbb, which otherwise survive this override and
+       leave near-invisible grey text on the dark green background
+       (group/site creation buttons, among others). */
+    color: white;
+    border: none;
 }
 
 /* Secondary/Outline Buttons */
