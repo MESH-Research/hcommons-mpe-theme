@@ -161,6 +161,15 @@ function hcommons_asset_path( $path ) {
  * This filter ensures the correct template is loaded for BP Docs pages.
  */
 function hcommons_bp_docs_template( $template ) {
+	// A group's docs tab (/groups/{slug}/docs/) also reports the docs
+	// component as active, but it must render inside the group's own page —
+	// with the group header and nav — like any other group tab. Leave it to
+	// BuddyPress; hijacking it here strands visitors with no way back to
+	// the group (knowledge-commons-wordpress#121).
+	if ( function_exists( 'bp_is_group' ) && bp_is_group() ) {
+		return $template;
+	}
+
 	// Check if BuddyPress Docs is active and we're on a docs page
 	if ( function_exists( 'bp_docs_is_docs_component' ) && bp_docs_is_docs_component() ) {
 		$custom_template = get_template_directory() . '/bp-docs-template.php';
