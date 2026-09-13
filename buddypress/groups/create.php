@@ -103,24 +103,15 @@
 					</label>
 				</div>
 
-				<?php if ( bp_is_active( 'forums' ) ) : ?>
-                        
-					<h4><?php _e( 'Group Forums', 'boss' ); ?></h4>
-
-					<?php if ( function_exists('bb_forums_is_installed_correctly') && bp_forums_is_installed_correctly() ) : ?>
-
-						<p><?php _e( 'Should this group have a forum?', 'boss' ); ?></p>
-
-						<div class="checkbox">
-							<input type="checkbox" name="group-show-forum" id="group-show-forum" value="1"<?php checked( bp_get_new_group_enable_forum(), true, true ); ?> /><label> <?php _e( 'Enable discussion forum', 'boss' ); ?></label>
-						</div>
-					<?php elseif ( is_super_admin() ) : ?>
-
-						<p><?php printf( __( '<strong>Attention Site Admin:</strong> Group forums require the <a href="%s">correct setup and configuration</a> of a bbPress installation.', 'boss' ), bp_core_do_network_admin() ? network_admin_url( 'settings.php?page=bb-forums-setup' ) :  admin_url( 'admin.php?page=bb-forums-setup' ) ); ?></p>
-
-					<?php endif; ?>
-
-				<?php endif; ?>
+				<?php
+				/*
+				 * The pre-bbPress-2.x "legacy forums" section used to live here.
+				 * bbPress registers itself as the 'forums' BuddyPress component,
+				 * so its gate was always open and super admins saw a spurious
+				 * setup notice. Group forums are configured on bbPress's own
+				 * creation step (knowledge-commons-wordpress#113).
+				 */
+				?>
 
 				<?php do_action( 'bp_after_group_settings_creation_step' ); ?>
 
