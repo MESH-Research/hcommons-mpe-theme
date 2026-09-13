@@ -30,6 +30,13 @@ function hcommons_setup() {
 	// Add support for responsive embeds
 	add_theme_support( 'responsive-embeds' );
 
+	// Render the document <title> on classic PHP templates too. Block
+	// templates get an unconditional title tag from the template canvas,
+	// but screens served through template_include overrides (the
+	// BuddyPress Docs template) bypass the canvas and emit no <title>
+	// without this support flag (knowledge-commons-wordpress#117).
+	add_theme_support( 'title-tag' );
+
 	// Add support for custom logo
 	add_theme_support( 'custom-logo', array(
 		'height'      => 32,
