@@ -6,7 +6,6 @@
  * @subpackage Boss
  */
 ?>
-<p>THIS IS A TEST</p>
 <?php do_action( 'bp_before_group_header' ); ?>
 
 <div id="cover-image-container">
