@@ -325,11 +325,19 @@
     border-color: #1a5f4e;
 }
 
-#buddypress .item-list-tabs ul li.selected a,
-#buddypress .item-list-tabs ul li.current a {
+/*
+ * bp-legacy styles the selected/current tab with a more specific
+ * `#buddypress div.item-list-tabs ul li.selected a` rule (pale grey
+ * background, 0.9 opacity). Match that specificity so the theme's green
+ * actually applies; otherwise the white count badge below lands on a near
+ * white tab and becomes unreadable.
+ */
+#buddypress div.item-list-tabs ul li.selected a,
+#buddypress div.item-list-tabs ul li.current a {
     background-color: #1a5f4e;
     color: white;
     border-color: #1a5f4e;
+    opacity: 1;
 }
 
 /*
@@ -358,7 +366,8 @@
 #buddypress div.item-list-tabs ul li.selected a span,
 #buddypress div.item-list-tabs ul li.current a span {
     color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.2);
+    /* 15% white over the green tab keeps the white count at >= 4.5:1. */
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 /* Activity Type Tabs */
@@ -449,7 +458,7 @@
 
 #buddypress .item-meta {
     font-size: 1rem;
-    color: rgba(26, 95, 78, 0.7);
+    color: rgba(26, 95, 78, 0.85);
     margin-bottom: 0.5rem;
 }
 
@@ -726,7 +735,7 @@
 
 #buddypress .pag-count {
     font-size: 1rem;
-    color: rgba(26, 95, 78, 0.7);
+    color: rgba(26, 95, 78, 0.85);
 }
 
 #buddypress .pagination-links {
