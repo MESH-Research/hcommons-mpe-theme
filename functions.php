@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Pure, WordPress-independent helpers.
 require_once __DIR__ . '/inc/works-url.php';
 require_once __DIR__ . '/inc/bp-docs-title.php';
+require_once __DIR__ . '/inc/asset-version.php';
 
 /**
  * Theme setup
@@ -59,6 +60,8 @@ add_action( 'after_setup_theme', 'hcommons_setup' );
  * Enqueue theme styles and scripts
  */
 function hcommons_enqueue_assets() {
+	$theme_version = wp_get_theme()->get( 'Version' );
+
 	// Font Awesome 4.7 (matches BuddyPress template class names)
 	wp_enqueue_style(
 		'font-awesome',
@@ -72,7 +75,7 @@ function hcommons_enqueue_assets() {
 		'hcommons-theme',
 		get_template_directory_uri() . '/assets/css/theme.css',
 		array( 'font-awesome' ),
-		wp_get_theme()->get( 'Version' )
+		hcommons_asset_version( get_template_directory() . '/assets/css/theme.css', $theme_version )
 	);
 
 	// Inject logo URL as CSS variable
@@ -92,7 +95,7 @@ function hcommons_enqueue_assets() {
 		'hcommons-theme',
 		get_template_directory_uri() . '/assets/js/theme.js',
 		array(),
-		wp_get_theme()->get( 'Version' ),
+		hcommons_asset_version( get_template_directory() . '/assets/js/theme.js', $theme_version ),
 		true
 	);
 
@@ -102,7 +105,7 @@ function hcommons_enqueue_assets() {
 			'hcommons-buddypress',
 			get_template_directory_uri() . '/assets/css/buddypress.css',
 			array( 'hcommons-theme' ),
-			wp_get_theme()->get( 'Version' )
+			hcommons_asset_version( get_template_directory() . '/assets/css/buddypress.css', $theme_version )
 		);
 	}
 }
@@ -116,7 +119,7 @@ function hcommons_enqueue_editor_assets() {
 		'hcommons-editor',
 		get_template_directory_uri() . '/assets/css/theme.css',
 		array(),
-		wp_get_theme()->get( 'Version' )
+		hcommons_asset_version( get_template_directory() . '/assets/css/theme.css', wp_get_theme()->get( 'Version' ) )
 	);
 
 	// Inject logo URL as CSS variable for editor
