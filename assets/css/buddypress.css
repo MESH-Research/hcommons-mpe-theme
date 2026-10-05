@@ -2838,6 +2838,16 @@ span.admin-links a:hover,
     border-color: rgba(26, 95, 78, 0.2) !important;
 }
 
+/* BuddyPress Docs' bp-docs.js runs $('.hide-if-no-js').show() on load. WordPress
+   marks its Quicktags (Code tab) toolbar with hide-if-no-js, so that call leaves
+   an inline display:block on it and defeats core's
+   `.tmce-active .quicktags-toolbar { display: none }` rule, stacking the Code
+   buttons above the TinyMCE toolbar. Only !important outranks an inline style.
+   Scoped to the Visual tab so the Code tab keeps its toolbar. */
+.wp-editor-wrap.tmce-active .quicktags-toolbar {
+    display: none !important;
+}
+
 /* ==========================================================================
    Profile Edit Form & Group Edit Form
    ========================================================================== */
